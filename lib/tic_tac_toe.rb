@@ -21,8 +21,111 @@ end
 
 display_board(board)
  
-def user_to_index(user_input)
+def input_to_index(user_input)
   new_user_input = user_input.to_i
   new_user_input -= 1 
   return new_user_input
+end
+
+def move(board, index, character)
+  board[index] = character
+end
+
+def position_taken?(board, position)
+  if board[position] == "" || board[position] == " " || board[position] == nil 
+    return false
+  else
+    return true
+  end
+end
+
+def valid_move?(board, position)
+ if !position_taken?(board, position) && position.between?(0,8)
+   return true
+ else 
+   return false
+ end
+end
+
+def turn_count(board)
+  counter = 0 
+  board.each do |position|
+   if position == "X" || position == "O"
+     counter += 1 
+    end
+   end
+     counter
+ end
+ 
+ def current_player(board)
+   turn_count(board) % 2 == 0 ? "X" : "O"
+ end
+ 
+def turn(board)
+  puts "Please enter 1-9:"
+  user_input = gets.strip
+  index = input_to_index(user_input)
+  if valid_move?(board, index)
+    move(board, index, current_player(board))
+    display_board(board)
+  else
+    turn(board)
+  end
+end
+
+def won?(board)
+  WIN_COMBINATIONS.each {|win_combo|
+  index_0 = win_combo[0]
+  index_1 = win_combo[1]
+  index_2 = win_combo[2]
+  
+  position_1 = board[index_0]
+  position_2 = board[index_1]
+  position_3 = board[index_2]
+  
+  if position_1 == "X" && position_2 == "X" && position_3 == "X" 
+    return win_combo 
+    elsif position_1 == "O" && position_2 == "O" && position_3 == "O"
+    return win_combo
+  end
+  }
+  return false 
+end
+
+def full?(board)
+  board.all? {|index| index == "X" || index == "O"}
+end
+
+def draw?(board)
+   if !won?(board) && full?(board)
+     return true 
+   else 
+     return false 
+   end
+ end
+  
+def over?(board)
+  if won?(board) || draw?(board) || full?(board)
+    return true 
+  else 
+    return false
+  end
+end
+
+def winner(board)
+  index = []
+  index = won?(board)
+   if index == false 
+     return nil 
+   else 
+     if board[index[0]] == "X"
+   return "X"
+    else
+      return "O"
+    end
+ end
+end
+
+def play(board)
+  
 end
